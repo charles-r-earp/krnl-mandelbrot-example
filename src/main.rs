@@ -5,7 +5,9 @@ use std::{io::Write, time::Instant};
 
 fn naive(h: u32, w: u32, max_iterations: u32) -> Vec<u8> {
     (0..h)
-        .flat_map(move |r| (0..w).map(move |c| kernels::mandelbro_impl(r, c, h, w, max_iterations)))
+        .flat_map(move |r| {
+            (0..w).map(move |c| kernels::mandelbrot_impl(r, c, h, w, max_iterations))
+        })
         .collect()
 }
 
@@ -15,7 +17,7 @@ fn parallel(h: u32, w: u32, max_iterations: u32) -> Vec<u8> {
     (0..h)
         .into_par_iter()
         .flat_map_iter(move |r| {
-            (0..w).map(move |c| kernels::mandelbro_impl(r, c, h, w, max_iterations))
+            (0..w).map(move |c| kernels::mandelbrot_impl(r, c, h, w, max_iterations))
         })
         .collect()
 }
@@ -62,7 +64,7 @@ mod kernels {
         (i as f32 * 255f32 / max_iterations as f32).round() as u8
     }
 
-    pub(crate) fn mandelbro_impl(r: u32, c: u32, h: u32, w: u32, max_iterations: u32) -> u8 {
+    pub(crate) fn mandelbrot_impl(r: u32, c: u32, h: u32, w: u32, max_iterations: u32) -> u8 {
         let x0 = ((c as f32) / (w as f32)) * 3.5 - 2.5;
         let y0 = ((r as f32) / (h as f32)) * 2.0 - 1.0;
         let mut x = 0f32;
@@ -85,7 +87,7 @@ mod kernels {
         let idx = offset + kernel.item_id() as u32;
         let r = idx / W;
         let c = idx % W;
-        *y = mandelbro_impl(r, c, H, W, I);
+        *y = mandelbrot_impl(r, c, H, W, I);
     }
 }
 
