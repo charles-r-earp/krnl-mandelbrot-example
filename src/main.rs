@@ -56,6 +56,9 @@ mod kernels {
         #[cfg(target_arch = "spirv")]
         use krnl_core::num_traits::Float;
 
+        if i == max_iterations {
+            return 0;
+        }
         (i as f32 * 255f32 / max_iterations as f32).round() as u8
     }
 
